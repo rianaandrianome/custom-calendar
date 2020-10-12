@@ -15,9 +15,12 @@ import {
   Flex,
   Header,
   Form,
+  Dropdown,
 } from '@fluentui/react-northstar';
 
-import { sampleEvents, emptyEvent } from '../sampleData';
+import { CloseIcon } from '@fluentui/react-icons-northstar';
+
+import { sampleEvents, emptyEvent, timeSlots } from '../sampleData';
 
 import './CustomCalendar.scss';
 
@@ -50,10 +53,9 @@ export default function CustomCalendar() {
         as: Input,
         showSuccessIndicator: false,
       },
-      inline: true,
     },
     {
-      label: 'Start',
+      label: 'Début',
       name: 'start',
       id: 'start-field',
       key: 'start',
@@ -62,7 +64,27 @@ export default function CustomCalendar() {
         as: Input,
       },
       type: 'date',
-      inline: true,
+      placeholder: 'dd-mm-yyyy',
+    },
+    {
+      label: {
+        content: `Heure de début:`,
+        id: 'start-time',
+      },
+      name: 'start-time',
+      key: 'start-time',
+      id: 'start-time',
+      control: {
+        as: Dropdown,
+        items: timeSlots,
+        'aria-labelledby': 'start-time',
+        search: true,
+        placeholder: '--:--',
+        searchInput: {
+          id: 'start-time',
+        },
+        id: undefined,
+      },
     },
     {
       label: 'End',
@@ -74,7 +96,33 @@ export default function CustomCalendar() {
         as: Input,
       },
       type: 'date',
-      inline: true,
+    },
+    {
+      label: {
+        content: `Heure de fin:`,
+        id: 'end-time',
+      },
+      name: 'end-time',
+      key: 'end-time',
+      id: 'end-time',
+      control: {
+        as: Dropdown,
+        items: timeSlots,
+        'aria-labelledby': 'end-time',
+        search: true,
+        placeholder: '--:--',
+        searchInput: {
+          id: 'end-time',
+        },
+        id: undefined,
+      },
+    },
+    {
+      control: {
+        as: Button,
+        content: 'Ajouter',
+      },
+      key: 'submit',
     },
   ];
 
@@ -83,23 +131,25 @@ export default function CustomCalendar() {
     console.log(eventDetails);
     popupContent = (
       <div className="popupAddEvent">
-        <Header as="h2" content="Add Event" />
-        <p>{eventDetails.startStr}</p>
+        <Flex gap="gap.small" fill hAlign="end">
+          <Button
+            icon={<CloseIcon />}
+            iconOnly
+            title="Close"
+            onClick={closePopup}
+            className="btn-close"
+          />
+        </Flex>
+        <Header as="h2" content="Ajouter une Réunion" />
+        <p>{`Pour la date du: ${new Date(eventDetails.start).toLocaleDateString(
+          'fr-FR'
+        )}`}</p>
         <Form
           onSubmit={() => {
-            alert('Form submitted');
+            alert('Réunion ajoutée');
           }}
           fields={fields}
         />
-
-        <Flex gap="gap.small" fill>
-          <Flex.Item>
-            <Button content="Cancel" onClick={closePopup} />
-          </Flex.Item>
-          <Flex.Item>
-            <Button primary content="Add" />
-          </Flex.Item>
-        </Flex>
       </div>
     );
   } else {

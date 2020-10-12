@@ -8,8 +8,17 @@
   transform: translate(-50%, -50%) !important;
 
   .popupAddEvent {
+    padding: 0 20px;
     form {
-      margin: 50px 0;
+      margin: 20px 0;
+
+      .ui-box.bq {
+        width: 100%;
+      }
+      button {
+        width: 100%;
+        max-width: 100%;
+      }
     }
   }
 }
