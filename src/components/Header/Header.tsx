@@ -1,6 +1,8 @@
 import React from 'react';
 import { Menu } from '@fluentui/react-northstar';
 
+import './Header.scss';
+
 export default function Header() {
   const items = [
     {
@@ -12,5 +14,13 @@ export default function Header() {
       content: 'Home',
     },
   ];
-  return <Menu defaultActiveIndex={0} items={items} underlined primary />;
+  return (
+    <Menu
+      className="navbar"
+      defaultActiveIndex={1}
+      items={items}
+      underlined
+      primary
+    />
+  );
 }

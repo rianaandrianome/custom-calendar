@@ -1,0 +1,37 @@
+.ui-button.addEvent {
+ display: none;
+}
+
+.ui-popup__content {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+
+  .popupAddEvent {
+    form {
+      margin: 50px 0;
+    }
+  }
+}
+
+.fc {
+
+ .fc-toolbar-title {
+  text-transform: capitalize;
+ }
+
+ .fc-daygrid {
+   table {
+    .fc-col-header-cell.fc-day {
+     text-transform: capitalize;
+    }
+
+    .fc-daygrid-day {
+     &.fc-day-today {
+      background-color: #ddd;
+     }
+    }
+    
+   }
+ }
+}
