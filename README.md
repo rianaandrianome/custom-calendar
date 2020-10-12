@@ -1,4 +1,4 @@
-**  Tools and plugins used **
+**Tools and plugins used**
 
 ## Node version 
 node version 10.16.3
