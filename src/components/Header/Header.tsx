@@ -1,5 +1,16 @@
 import React from 'react';
+import { Menu } from '@fluentui/react-northstar';
 
 export default function Header() {
-  return <h1>This is the Header</h1>;
+  const items = [
+    {
+      key: 'brand',
+      content: 'Binouze Corporation',
+    },
+    {
+      key: 'home',
+      content: 'Home',
+    },
+  ];
+  return <Menu defaultActiveIndex={0} items={items} underlined primary />;
 }
