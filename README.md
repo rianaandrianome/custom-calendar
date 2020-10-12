@@ -1,6 +1,6 @@
-## Tools and plugins used
+**  Tools and plugins used **
 
-### Node version 
+## Node version 
 node version 10.16.3
 
 Reasons: 
@@ -11,7 +11,7 @@ an new and not stable version would sometimes include new features that are not 
 support continously fix bugs are provide patches to improve the stability of the version
 * and provide a reliable platform for applications of any scale.
 
-### EsLint and Prettier plugins used to flag programming errors, bugs, stylistic errors, and suspicious constructs during development
+## EsLint and Prettier plugins used to flag programming errors, bugs, stylistic errors, and suspicious constructs during development
 * "eslint" : for identifying and reporting syntax errors, bugs etc in the code 
 * "eslint-plugin-react" : provide React specific linting rules for ESLint
 * "eslint-config-airbnb" : contains eslint rules to flag code not following the [airbnb coding conventions](https://github.com/airbnb/javascript/tree/master/react)
