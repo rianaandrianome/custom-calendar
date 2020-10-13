@@ -27,3 +27,8 @@ support continously fix bugs are provide patches to improve the stability of the
 
 * "eslint-config-airbnb-typescript": airbnb rules for both JS and TS files
 * "eslint-plugin-jest": ESLint plugin for Jest
+
+### DB used
+Firebase realtime database
+Tool: Flamelink Firebase CMS : to easily add schema
+GET and POST made with build in React Fetch method
