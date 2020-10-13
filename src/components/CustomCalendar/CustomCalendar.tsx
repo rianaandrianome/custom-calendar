@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 
 import FullCalendar from '@fullcalendar/react';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -10,7 +10,7 @@ import listPlugin from '@fullcalendar/list';
 import frLocale from '@fullcalendar/core/locales/fr';
 import allLocales from '@fullcalendar/core/locales-all';
 
-import { Popup, Button, Input } from '@fluentui/react-northstar';
+import { Popup, Button, Input, Dropdown } from '@fluentui/react-northstar';
 
 import { CloseIcon } from '@fluentui/react-icons-northstar';
 import { emptyEvent } from '../sampleData';
@@ -23,6 +23,8 @@ export default function CustomCalendar() {
   const [showPopup, setShowPopup] = useState(false);
   const [eventDetails, setEventDetails] = useState(emptyEvent);
   const [allEvents, setAllEvents] = useState({});
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [calendarRef, setCalendarRef] = useState(createRef<FullCalendar>());
 
   // #region State variable for input change
   const [title, setTitle] = useState('');
@@ -48,44 +50,23 @@ export default function CustomCalendar() {
 
   useEffect(() => {
     fetchAll();
-    const changeView = (period: string) => {
-      const el: HTMLElement | null = document.querySelector(period);
-      if (el instanceof HTMLElement) {
-        el.click();
-      }
-    };
-    const ddlContainer: HTMLElement | null = document.querySelector(
-      '.fc-customDdl-button'
-    );
-    const ddl = `<select name="ddlView"><option value="month" onClick="changeView('fc-dayGridMonth-button')">Test</option><option onClick="changeView('fc-timeGridWeek-button')" value="week">Semaine</option><option onClick="changeView('fc-timeGridDay-button')" value="day">Jour</option></select>`;
-
-    if (ddlContainer instanceof HTMLElement) {
-      ddlContainer.outerHTML = ddl;
-    }
   }, []);
 
   // #region CALENDAR CUSTOMIZATION
   const handleCustomBtn = () => {
     alert('Custom');
   };
-  const handleDdl = (event: any) => {
-    event.preventDefault();
-  };
 
   const customs = {
     customButton: {
-      text: 'Custom',
+      text: 'Toggle Theme',
       click: handleCustomBtn,
-    },
-    customDdl: {
-      text: 'Custom Dropdown',
-      click: handleDdl,
     },
   };
   const headerToolbar = {
     start: 'prev,next today,customButton',
     center: 'title',
-    end: 'customDdl,dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+    end: '',
   };
 
   const dayHeaderFormat = {
@@ -196,8 +177,29 @@ export default function CustomCalendar() {
 
   // #endregion
 
+  const p = ['Mois', 'Semaine', 'Jour'];
+  const handleDdlChange = (e: any, option: any) => {
+    if (calendarRef.current !== null) {
+      if (option.value === 'Mois') {
+        calendarRef.current.getApi().changeView('dayGridMonth');
+      }
+      if (option.value === 'Semaine') {
+        calendarRef.current.getApi().changeView('timeGridWeek');
+      }
+      if (option.value === 'Jour') {
+        calendarRef.current.getApi().changeView('timeGridDay');
+      }
+    }
+  };
+
   return (
     <>
+      <Dropdown
+        items={p}
+        placeholder="Choisir une vue"
+        checkable
+        onChange={(e, option) => handleDdlChange(e, option)}
+      />
       {showPopup ? (
         <Popup
           open={showPopup}
@@ -230,6 +232,7 @@ export default function CustomCalendar() {
         events={allEvents}
         eventClick={handleEditEvent}
         customButtons={customs}
+        ref={calendarRef}
       />
     </>
   );

@@ -11,7 +11,7 @@ export default function Header() {
     },
     {
       key: 'home',
-      content: 'Home',
+      content: 'Calendrier des réunions',
     },
   ];
   return (

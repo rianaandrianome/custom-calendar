@@ -1,3 +1,30 @@
+.ui-dropdown {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  margin-bottom: -37px;
+  
+  .ui-button {
+    background-color: #2c3e50;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ui-dropdown__item {
+    background-color: white;
+  }
+}
+
+.fc .fc-toolbar {
+  justify-content: flex-start;
+
+  .fc-toolbar-chunk:nth-child(2) {
+    margin-left: 20%;
+  }
+}
+
 .ui-button.addEvent {
  display: none;
 }
