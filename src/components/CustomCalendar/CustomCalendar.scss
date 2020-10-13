@@ -8,7 +8,7 @@
   transform: translate(-50%, -50%) !important;
 
   .popupAddEvent {
-    padding: 20px 20px 0 20px;
+    padding: 20px;
 
     h2.ui-header {
       margin-top: 0;
@@ -29,11 +29,14 @@
           margin-top: 30px;
         }
       }
-      
-      .allDay-wrapper {
-        display: flex;
-        text-align: center;
+
+      .allDayCk .ui-box input {
+        width: auto !important;
       }
+    }
+
+    .btn-close {
+      float: right;
     }
   }
 }

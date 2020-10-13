@@ -37,7 +37,6 @@ async function addEvent(
     end,
     endStr,
   };
-  console.log(addData);
   const url = `${apiUrl}/event/en-US.json/${auth}`;
   const response = await fetch(url, {
     method: 'POST',
@@ -49,7 +48,6 @@ async function addEvent(
 
     return resp;
   } catch (error) {
-    // window.location.href = '/error_page';
     return error;
   }
 }

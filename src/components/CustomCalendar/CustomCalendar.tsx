@@ -13,7 +13,6 @@ import allLocales from '@fullcalendar/core/locales-all';
 import { Popup, Button, Input } from '@fluentui/react-northstar';
 
 import { CloseIcon } from '@fluentui/react-icons-northstar';
-
 import { emptyEvent } from '../sampleData';
 
 import { getAllEvents, addEvent } from '../functions';
@@ -28,12 +27,12 @@ export default function CustomCalendar() {
   // #region State variable for input change
   const [title, setTitle] = useState('');
   const [allDay, setAllDay] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [start, setStart] = useState(new Date(eventDetails.startStr));
+  const [end, setEnd] = useState(new Date(eventDetails.endStr));
 
   // #endregion
 
-  useEffect(() => {
+  const fetchAll = () => {
     const res = getAllEvents();
     res.then((response) => {
       const eventList = Object.values(response).map((e: any) => {
@@ -45,6 +44,9 @@ export default function CustomCalendar() {
       });
       setAllEvents(eventList);
     });
+  };
+  useEffect(() => {
+    fetchAll();
   }, []);
 
   // #region CALENDAR CUSTOMIZATION
@@ -79,11 +81,11 @@ export default function CustomCalendar() {
   const handleAllDay = (event: any) => {
     setAllDay(event.target.value);
   };
-  const handleStartTime = (event: any) => {
-    setStartTime(event.target.value);
+  const handleStart = (event: any) => {
+    setStart(event.target.value);
   };
-  const handleEndTime = (event: any) => {
-    setEndTime(event.target.value);
+  const handleEnd = (event: any) => {
+    setEnd(event.target.value);
   };
 
   // #endregion
@@ -96,20 +98,19 @@ export default function CustomCalendar() {
   const submitAddEvent = (event: any) => {
     event.preventDefault();
 
-    const startDate = new Date(`${eventDetails.startStr} ${startTime}`);
-    const endDate = new Date(`${eventDetails.endStr} ${endTime}`);
-
     const bAllDay = allDay === 'true';
+
     const resAdd = addEvent(
       title,
       bAllDay,
-      startDate,
-      eventDetails.startStr,
-      endDate,
-      eventDetails.startStr
+      new Date(start),
+      start.toString(),
+      new Date(end),
+      end.toString()
     );
     resAdd.then((response) => {
-      // response
+      setShowPopup(false);
+      fetchAll();
     });
   };
 
@@ -137,44 +138,23 @@ export default function CustomCalendar() {
             label="Toute la journée"
             type="checkbox"
             onBlur={handleAllDay}
+            className="allDayCk"
           />
           <Input
             fluid
-            label="Date de début"
             required
-            type="date"
-            name="start"
-            value={eventDetails.startStr}
+            label="Date et Heure de début"
+            onBlur={handleStart}
+            placeholder="YYYY/MM/DD HH:MM:SS"
           />
           <Input
             fluid
-            label="Heure de début"
-            type="text"
-            onBlur={handleStartTime}
-            placeholder="00:00:00"
-          />
-          <Input
-            fluid
-            label="Date de fin"
             required
-            type="date"
-            value={eventDetails.startStr}
+            label="Date et heure de Fin"
+            placeholder="YYYY/MM/DD HH:MM:SS"
+            onBlur={handleEnd}
           />
-          <Input
-            fluid
-            label="Heure de fin"
-            type="text"
-            name="endTime"
-            onBlur={handleEndTime}
-            placeholder="23:59:00"
-          />
-          <Button
-            content="Ajouter"
-            fluid
-            loader="add"
-            primary
-            className="btnSubmit"
-          />
+          <Button content="Ajouter" fluid primary className="btnSubmit" />
         </form>
       </div>
     );
