@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-underscore-dangle */
+import React, { useState, useEffect } from 'react';
 
 import FullCalendar from '@fullcalendar/react';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -8,26 +10,44 @@ import listPlugin from '@fullcalendar/list';
 import frLocale from '@fullcalendar/core/locales/fr';
 import allLocales from '@fullcalendar/core/locales-all';
 
-import {
-  Popup,
-  Button,
-  Input,
-  Flex,
-  Header,
-  Form,
-  Dropdown,
-} from '@fluentui/react-northstar';
+import { Popup, Button, Input } from '@fluentui/react-northstar';
 
 import { CloseIcon } from '@fluentui/react-icons-northstar';
 
-import { sampleEvents, emptyEvent, timeSlots } from '../sampleData';
+import { emptyEvent } from '../sampleData';
+
+import { getAllEvents, addEvent } from '../functions';
 
 import './CustomCalendar.scss';
 
 export default function CustomCalendar() {
   const [showPopup, setShowPopup] = useState(false);
   const [eventDetails, setEventDetails] = useState(emptyEvent);
+  const [allEvents, setAllEvents] = useState({});
 
+  // #region State variable for input change
+  const [title, setTitle] = useState('');
+  const [allDay, setAllDay] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+
+  // #endregion
+
+  useEffect(() => {
+    const res = getAllEvents();
+    res.then((response) => {
+      const eventList = Object.values(response).map((e: any) => {
+        delete e._meta_;
+        delete e.id;
+        delete e.order;
+        delete e.parentId;
+        return e;
+      });
+      setAllEvents(eventList);
+    });
+  }, []);
+
+  // #region CALENDAR CUSTOMIZATION
   const headerToolbar = {
     start: 'prev,next today',
     center: 'title',
@@ -38,130 +58,131 @@ export default function CustomCalendar() {
     weekday: 'long',
   };
 
+  // #region  Handle cell clicks
+  const handleAddEvent = (cellData: any) => {
+    setShowPopup(true);
+    setEventDetails(cellData);
+  };
+
+  const handleEditEvent = () => {
+    alert('Modifier une Réunion');
+  };
+
+  const handleDateClick = () => {};
+
+  // #endregion
+
+  // #region Handle input change
+  const handleTitle = (event: any) => {
+    setTitle(event.target.value);
+  };
+  const handleAllDay = (event: any) => {
+    setAllDay(event.target.value);
+  };
+  const handleStartTime = (event: any) => {
+    setStartTime(event.target.value);
+  };
+  const handleEndTime = (event: any) => {
+    setEndTime(event.target.value);
+  };
+
+  // #endregion
+
   const closePopup = () => {
     setShowPopup(false);
   };
 
-  const fields = [
-    {
-      label: 'Title',
-      name: 'title',
-      id: 'title-field',
-      key: 'title',
-      required: true,
-      control: {
-        as: Input,
-        showSuccessIndicator: false,
-      },
-    },
-    {
-      label: 'Début',
-      name: 'start',
-      id: 'start-field',
-      key: 'start',
-      required: true,
-      control: {
-        as: Input,
-      },
-      type: 'date',
-      placeholder: 'dd-mm-yyyy',
-    },
-    {
-      label: {
-        content: `Heure de début:`,
-        id: 'start-time',
-      },
-      name: 'start-time',
-      key: 'start-time',
-      id: 'start-time',
-      control: {
-        as: Dropdown,
-        items: timeSlots,
-        'aria-labelledby': 'start-time',
-        search: true,
-        placeholder: '--:--',
-        searchInput: {
-          id: 'start-time',
-        },
-        id: undefined,
-      },
-    },
-    {
-      label: 'End',
-      name: 'end',
-      id: 'end-field',
-      key: 'end',
-      required: true,
-      control: {
-        as: Input,
-      },
-      type: 'date',
-    },
-    {
-      label: {
-        content: `Heure de fin:`,
-        id: 'end-time',
-      },
-      name: 'end-time',
-      key: 'end-time',
-      id: 'end-time',
-      control: {
-        as: Dropdown,
-        items: timeSlots,
-        'aria-labelledby': 'end-time',
-        search: true,
-        placeholder: '--:--',
-        searchInput: {
-          id: 'end-time',
-        },
-        id: undefined,
-      },
-    },
-    {
-      control: {
-        as: Button,
-        content: 'Ajouter',
-      },
-      key: 'submit',
-    },
-  ];
+  // #region Popup form submission
+  const submitAddEvent = (event: any) => {
+    event.preventDefault();
 
+    const startDate = new Date(`${eventDetails.startStr} ${startTime}`);
+    const endDate = new Date(`${eventDetails.endStr} ${endTime}`);
+
+    const bAllDay = allDay === 'true';
+    const resAdd = addEvent(
+      title,
+      bAllDay,
+      startDate,
+      eventDetails.startStr,
+      endDate,
+      eventDetails.startStr
+    );
+    resAdd.then((response) => {
+      // response
+    });
+  };
+
+  // #endregion
+
+  // #region POPUP content
   let popupContent;
   if (eventDetails !== emptyEvent) {
-    console.log(eventDetails);
     popupContent = (
       <div className="popupAddEvent">
-        <Flex gap="gap.small" fill hAlign="end">
-          <Button
-            icon={<CloseIcon />}
-            iconOnly
-            title="Close"
-            onClick={closePopup}
-            className="btn-close"
-          />
-        </Flex>
-        <Header as="h2" content="Ajouter une Réunion" />
+        <Button
+          icon={<CloseIcon />}
+          iconOnly
+          title="Close"
+          onClick={closePopup}
+          className="btn-close"
+        />
+        <h2>Ajouter une Réunion</h2>
         <p>{`Pour la date du: ${new Date(eventDetails.start).toLocaleDateString(
           'fr-FR'
         )}`}</p>
-        <Form
-          onSubmit={() => {
-            alert('Réunion ajoutée');
-          }}
-          fields={fields}
-        />
+        <form onSubmit={submitAddEvent}>
+          <Input fluid label="Title" required onBlur={handleTitle} />
+          <Input
+            label="Toute la journée"
+            type="checkbox"
+            onBlur={handleAllDay}
+          />
+          <Input
+            fluid
+            label="Date de début"
+            required
+            type="date"
+            name="start"
+            value={eventDetails.startStr}
+          />
+          <Input
+            fluid
+            label="Heure de début"
+            type="text"
+            onBlur={handleStartTime}
+            placeholder="00:00:00"
+          />
+          <Input
+            fluid
+            label="Date de fin"
+            required
+            type="date"
+            value={eventDetails.startStr}
+          />
+          <Input
+            fluid
+            label="Heure de fin"
+            type="text"
+            name="endTime"
+            onBlur={handleEndTime}
+            placeholder="23:59:00"
+          />
+          <Button
+            content="Ajouter"
+            fluid
+            loader="add"
+            primary
+            className="btnSubmit"
+          />
+        </form>
       </div>
     );
   } else {
     popupContent = null;
   }
 
-  const handleDateSelect = (cellData: any) => {
-    setShowPopup(true);
-    setEventDetails(cellData);
-  };
-
-  const handleDateClick = () => {};
+  // #endregion
 
   return (
     <>
@@ -186,16 +207,16 @@ export default function CustomCalendar() {
         plugins={[interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin]}
         initialView="dayGridMonth"
         headerToolbar={headerToolbar}
-        editable
         locales={allLocales}
         locale={frLocale}
         dateClick={handleDateClick}
-        select={handleDateSelect}
+        select={handleAddEvent}
         dayMaxEvents
         selectable
         timeZone="UTC"
         dayHeaderFormat={dayHeaderFormat}
-        events={sampleEvents}
+        events={allEvents}
+        eventClick={handleEditEvent}
       />
     </>
   );

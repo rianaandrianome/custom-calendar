@@ -8,16 +8,31 @@
   transform: translate(-50%, -50%) !important;
 
   .popupAddEvent {
-    padding: 0 20px;
+    padding: 20px 20px 0 20px;
+
+    h2.ui-header {
+      margin-top: 0;
+    }
+
     form {
-      margin: 20px 0;
+      margin-top: 20px;
 
       .ui-box.bq {
         width: 100%;
+        margin-bottom: 5px;
       }
       button {
         width: 100%;
         max-width: 100%;
+
+        &.btnSubmit {
+          margin-top: 30px;
+        }
+      }
+      
+      .allDay-wrapper {
+        display: flex;
+        text-align: center;
       }
     }
   }
@@ -39,6 +54,12 @@
      &.fc-day-today {
       background-color: #ddd;
      }
+
+     .fc-h-event {
+        display: block;
+        border: 1px solid #2c3e50;
+        background-color: #2c3e50;
+      }
     }
     
    }
