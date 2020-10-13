@@ -45,15 +45,47 @@ export default function CustomCalendar() {
       setAllEvents(eventList);
     });
   };
+
   useEffect(() => {
     fetchAll();
+    const changeView = (period: string) => {
+      const el: HTMLElement | null = document.querySelector(period);
+      if (el instanceof HTMLElement) {
+        el.click();
+      }
+    };
+    const ddlContainer: HTMLElement | null = document.querySelector(
+      '.fc-customDdl-button'
+    );
+    const ddl = `<select name="ddlView"><option value="month" onClick="changeView('fc-dayGridMonth-button')">Test</option><option onClick="changeView('fc-timeGridWeek-button')" value="week">Semaine</option><option onClick="changeView('fc-timeGridDay-button')" value="day">Jour</option></select>`;
+
+    if (ddlContainer instanceof HTMLElement) {
+      ddlContainer.outerHTML = ddl;
+    }
   }, []);
 
   // #region CALENDAR CUSTOMIZATION
+  const handleCustomBtn = () => {
+    alert('Custom');
+  };
+  const handleDdl = (event: any) => {
+    event.preventDefault();
+  };
+
+  const customs = {
+    customButton: {
+      text: 'Custom',
+      click: handleCustomBtn,
+    },
+    customDdl: {
+      text: 'Custom Dropdown',
+      click: handleDdl,
+    },
+  };
   const headerToolbar = {
-    start: 'prev,next today',
+    start: 'prev,next today,customButton',
     center: 'title',
-    end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+    end: 'customDdl,dayGridMonth,timeGridWeek,timeGridDay,listWeek',
   };
 
   const dayHeaderFormat = {
@@ -108,7 +140,7 @@ export default function CustomCalendar() {
       new Date(end),
       end.toString()
     );
-    resAdd.then((response) => {
+    resAdd.then(() => {
       setShowPopup(false);
       fetchAll();
     });
@@ -197,6 +229,7 @@ export default function CustomCalendar() {
         dayHeaderFormat={dayHeaderFormat}
         events={allEvents}
         eventClick={handleEditEvent}
+        customButtons={customs}
       />
     </>
   );
